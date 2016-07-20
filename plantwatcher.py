@@ -2,6 +2,8 @@ import grovepi
 import smtplib, time, sys
 from time import gmtime, strftime
 
+notified = false;
+
 # Connect the Grove Moisture Sensor to analog port A0
 # SIG,NC,VCC,GND
 sensorA0 = 0
@@ -34,9 +36,12 @@ while True:
     plantsWithDryEarth = [];
     try:
         valueA0 = grovepi.analogRead(sensorA0)
-        if valueA0 < 300:
+        if valueA0 < 300 && notified = false:
             plantsWithDryEarth.append(sensorA0)
-        notify(plantsWithDryEarth)
+            notified = true;
+            notify(plantsWithDryEarth)
+        else if value > 300 && notified = true:
+            notified = false;
         time.sleep(5)
     except KeyboardInterrupt:
             break
