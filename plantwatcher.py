@@ -36,11 +36,11 @@ while True:
     plantsWithDryEarth = [];
     try:
         valueA0 = grovepi.analogRead(sensorA0)
-        if valueA0 < 300 && notified = false:
+        if valueA0 < 300 and notified = false:
             plantsWithDryEarth.append(sensorA0)
             notified = true;
             notify(plantsWithDryEarth)
-        else if value > 300 && notified = true:
+        else if value > 300 and notified = true:
             notified = false;
         time.sleep(5)
     except KeyboardInterrupt:
