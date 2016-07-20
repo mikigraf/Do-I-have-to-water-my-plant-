@@ -2,9 +2,13 @@ import RPi.GPIO as GPIO
 import smtplib, time, sys
 from time import gmtime, strftime
 
+version = "0.1"
+
 def callback(channel):
     if GPIO.input(channel):
         notify()
+    else:
+	print "Feutchigkeit erkennbar :)))!"
 
 def notify():
     # senders information
@@ -27,11 +31,17 @@ def notify():
     print 'done!'
     smtpserver.close()
 
+print "PlantWatcher" + version
 GPIO.setmode(GPIO.BCM)
 channel = 17
 GPIO.setup(channel,GPIO.IN)
 GPIO.add_event_detect(channel, GPIO.BOTH, bouncetime = 300)
 GPIO.add_event_callback(channel, callback)
 
+counter = 0;
+
 while True:
+    counter += 1
+    print counter
     time.sleep(5)
+
