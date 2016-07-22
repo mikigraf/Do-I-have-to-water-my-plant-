@@ -16,6 +16,11 @@ Podłącz czujnik do Raspberry Pi jak na załączonym obrazku
 
 ![](https://s32.postimg.org/3rs5yfy6d/20160722_140722.jpg)
 
+## W wierszu poleceń wpisz:
+git clone https://github.com/spejss/PlantWatcher.git
+
+python plantwatcher.py <email nadawcy> <haslo do emaila nadawcy> <email adresata/odbiorcy>
+
 ![](https://s32.postimg.org/ogqwfgcx1/20160722_133041.jpg)
 
 ![](https://s32.postimg.org/tqr9t07s5/20160722_133048.jpg)
