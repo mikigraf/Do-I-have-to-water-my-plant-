@@ -1,4 +1,4 @@
-\# Skrypt napisany przez Mikolaja Wawrzyniaka @spejss
+# Skrypt napisany przez Mikolaja Wawrzyniaka @spejss
 # Email do wysylania powiadomien musi byc adresem z koncowka @gmail.com!
 # Argumenty w wierszu polecen:
 # python plantwatcher.py <email do wysylania powiadomien> <haslo do tego emaila> <email na ktory te powiadomienia maja docierac>
