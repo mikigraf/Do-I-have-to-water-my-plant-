@@ -1,36 +1,37 @@
-# This script requires 3 command line arguments
-# 1st argument: senders email address
-# 2nd argument: password to the senders email address
-# 3rd argument: recipents email address
+\# Skrypt napisany przez Mikolaja Wawrzyniaka @spejss
+# Email do wysylania powiadomien musi byc adresem z koncowka @gmail.com!
+# Argumenty w wierszu polecen:
+# python plantwatcher.py <email do wysylania powiadomien> <haslo do tego emaila> <email na ktory te powiadomienia maja docierac>
+# Przyklad: python plantwatcher.py jaroslaw@gmail.com kotekkotkajarka powiadommnie@gmail.com
+
 import RPi.GPIO as GPIO
 import smtplib, time, sys, datetime
 from time import gmtime, strftime
 version = "0.2"
 
-# check if the notification has been already sent, in case of an triggering event
-notified = False
-
-# day of the year, during which the last notification was sent on
+# Dzien w roku, w ktorym zostalo wyslane ostatnie powiadomienie
 lastNotifiedOn = 0
 
+# Funkcja, ktora zostaje wywolana w odpowiedzi na wydarzenia
 def callback(channel):
     if lastNotifiedOn is None:
 	global lastNotifiedOn
 	lastNotifiedOn = 0
-     
+    # Jesli nadchodzi sygnal i dzien, w ktorym zostalo wyslane ostatnie powiadomienie
+    # nie jest dniem dzisiejszym, to wyslij powiadomienie 
     if GPIO.input(channel) and lastNotifiedOn is not datetime.datetime.now().timetuple().tm_yday :
         notify()
 	lastNotifiedOn = datetime.datetime.now().timetuple().tm_yday
-	print "Feuchtigkeit ist nicht erkennbar und eine Benachrichtigung wurde am %s Tag des Jahres verschickt" %(lastNotifiedOn)
+	print "Wilgoc nie zostala wykryta. Ostatnie powiadomienie zostalo wyslane w  %s dniu tego roku" %(lastNotifiedOn)
     else:
-	print "Feuchtigkeit ist erkennbar."
+	print "Wilgoc zostala wykryta. Wszystko w porzadku! :)"
 
 def notify():
-    # senders information
+    # informacje o nadawcy
     s_username = sys.argv[1]
     s_password = sys.argv[2]
 
-    # recipents information
+    # informacje o odbiorcy
     R_EMAIL_ADDRESS = sys.argv[3]
     print(sys.argv[1])  
     print(sys.argv[2])
@@ -40,11 +41,11 @@ def notify():
     smtpserver.starttls()
     smtpserver.ehlo
     smtpserver.login(s_username, s_password)
-    header = strftime("%Y-%m-%d %H:%M:%S", gmtime()) + ' To:' + R_EMAIL_ADDRESS + '\n' + 'From: ' + s_username + '\n' + 'Subject:[PlantWatcher] Water needed! \n'
+    header = strftime("%Y-%m-%d %H:%M:%S", gmtime()) + ' To:' + R_EMAIL_ADDRESS + '\n' + 'From: ' + s_username + '\n' + 'Subject:[PlantWatcher] Potrzeba wody :(  \n'
     print header
-    msg = header + '\n' + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + ' Deine Blumen muessen unbedingt Wasser bekommen, sonst wird nix Bruddi \n\n'
+    msg = header + '\n' + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + " Woda nie zostala wykryta :( Twoje kwiaty potrzebuja wody.  \n\n"
     smtpserver.sendmail(s_username, R_EMAIL_ADDRESS, msg)
-    print 'done!'
+    print 'Wyslane!'
     smtpserver.close()
     notified = True
 
