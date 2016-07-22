@@ -1,19 +1,35 @@
+# This script requires 3 command line arguments
+# 1st argument: senders email address
+# 2nd argument: password to the senders email address
+# 3rd argument: recipents email address
 import RPi.GPIO as GPIO
-import smtplib, time, sys
+import smtplib, time, sys, datetime
 from time import gmtime, strftime
+version = "0.2"
 
-version = "0.1"
+# check if the notification has been already sent, in case of an triggering event
+notified = False
+
+# day of the year, during which the last notification was sent on
+lastNotifiedOn = 0
 
 def callback(channel):
-    if GPIO.input(channel):
+    if lastNotifiedOn is None:
+	global lastNotifiedOn
+	lastNotifiedOn = 0
+     
+    if GPIO.input(channel) and lastNotifiedOn is not datetime.datetime.now().timetuple().tm_yday :
         notify()
+	lastNotifiedOn = datetime.datetime.now().timetuple().tm_yday
+	print "Feuchtigkeit ist nicht erkennbar und eine Benachrichtigung wurde am %s Tag des Jahres verschickt" %(lastNotifiedOn)
     else:
-	print "Feutchigkeit erkennbar :)))!"
+	print "Feuchtigkeit ist erkennbar."
 
 def notify():
     # senders information
     s_username = sys.argv[1]
     s_password = sys.argv[2]
+
     # recipents information
     R_EMAIL_ADDRESS = sys.argv[3]
     print(sys.argv[1])  
@@ -30,6 +46,7 @@ def notify():
     smtpserver.sendmail(s_username, R_EMAIL_ADDRESS, msg)
     print 'done!'
     smtpserver.close()
+    notified = True
 
 print "PlantWatcher" + version
 GPIO.setmode(GPIO.BCM)
@@ -38,10 +55,6 @@ GPIO.setup(channel,GPIO.IN)
 GPIO.add_event_detect(channel, GPIO.BOTH, bouncetime = 300)
 GPIO.add_event_callback(channel, callback)
 
-counter = 0;
-
 while True:
-    counter += 1
-    print counter
-    time.sleep(5)
+    time.sleep(0.1)
 
